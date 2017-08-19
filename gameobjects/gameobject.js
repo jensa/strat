@@ -1,12 +1,17 @@
 var Rectangle = require('../rectangle.js');
+var Constants = require('../constants.js');
+var Utils = require('../utils.js');
 
 class GameObject {
   constructor(x,y,h,w,owner) {
-    this.position = new Rectangle(x,y,h,w);
+    this.id = Utils.getId();
+    var height = h - (h%Constants.gridUnitSize);
+    var width = w - (w%Constants.gridUnitSize);
+    this.position = new Rectangle(x,y,height,width);
     this.size = {w,h};
     this.visible = false;
     this.owner = owner;
-    this.update = () => {
+    this.update = map => {
       return this.position;
     };
     this.draw = (ctx, mapper) => {

@@ -6,32 +6,31 @@ var Map = require('./map.js');
 
 module.exports = function Game(canvas){
   this.canvas = canvas;
-  this.map = new Map(300,300);
+  this.map = new Map(900,900);
   this.viewport = new Viewport(canvas, this.map, {x:100,y:100});
   this.ctx = canvas.getContext('2d');
-  //this.ctx.translate(0.5, 0.5);
+  this.ctx.imageSmoothingEnabled = false;
+  this.ctx.translate(0.5, 0.5);
   this.localPlayer = 1;
-  this.fps = 50;
+  this.fps = 60;
   this.baseLayer = [];
   this.topLayer = [];
   this.selected = [];
   this.update = () => {
+    var dead = this.baseLayer.filter(o => {return !o.alive();});
+    dead.forEach(obj =>{
+      this.map.removeObjectFromGrid(obj.position);
+    });
     this.baseLayer = this.baseLayer.filter(o => {return o.alive();});
     this.baseLayer.forEach(obj => {
       var preUpdatePosition = new Rectangle(obj.position.x,obj.position.y,obj.position.h,obj.position.w);
-      var newPosition = obj.update();
+      var newPosition = obj.update(this.map);
       //check map collision
       if(!this.map.isObjectInside(newPosition)){
         obj.position = preUpdatePosition;
         return;
       }
-      var insersects = false;
-      this.baseLayer.forEach(other =>{
-        if(other === obj || insersects){ return;}
-        if(obj.position.intersectRect(other.position)){
-          obj.position = preUpdatePosition;
-        }
-      });
+      this.map.moveObjectInGrid(preUpdatePosition, newPosition, obj.id);
     });
     this.topLayer = this.topLayer.filter(o => {return o.alive();});
     this.topLayer.forEach(obj => {
@@ -55,7 +54,6 @@ module.exports = function Game(canvas){
   };
 
   this.selectObjectsInRect = (x,y,h,w,player) => {
-
     //var translatedPosition = this.viewport.convertMapCoordsToDisplayCoords(x, y);
     this.selected.map(obj =>{ obj.deselect(); });
     this.selected.length = 0;

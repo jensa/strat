@@ -3,7 +3,8 @@ module.exports = function Viewport(canvas, map, startCorner){
 
   this.map = map;
   this.canvas = canvas;
-  this.scrollSpeed = 2;
+  this.scrollSpeed = 5;
+  this.scrollMargin = 60;
   this.viewportCorner = {x:startCorner.x,y:startCorner.y};
   this.convertMapCoordsToDisplayCoords = (x,y) => {
     return {x:(x - this.viewportCorner.x), y:(y-this.viewportCorner.y)};
@@ -14,11 +15,10 @@ module.exports = function Viewport(canvas, map, startCorner){
   }
 
   this.updateScroll = () => {
-    var scrollMargin = 30;
-    if(this.mouseX > canvas.width - scrollMargin && this.mouseX < canvas.width){ this.scrollRight();}
-    if(this.mouseY > canvas.height - scrollMargin && this.mouseY < canvas.height){ this.scrollDown();}
-    if(this.mouseX < scrollMargin && this.mouseX > 0){ this.scrollLeft();}
-    if(this.mouseY < scrollMargin && this.mouseY > 0){ this.scrollUp();}
+    if(this.mouseX > canvas.width - this.scrollMargin && this.mouseX < canvas.width){ this.scrollRight();}
+    if(this.mouseY > canvas.height - this.scrollMargin && this.mouseY < canvas.height){ this.scrollDown();}
+    if(this.mouseX < this.scrollMargin && this.mouseX > 0){ this.scrollLeft();}
+    if(this.mouseY < this.scrollMargin && this.mouseY > 0){ this.scrollUp();}
   }
 
   this.handleMove = coords =>{

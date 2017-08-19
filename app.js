@@ -1,5 +1,6 @@
 var Peon = require('./gameobjects/peon.js');
 var Game = require('./game.js');
+var Constants = require('./constants.js');
 window.oncontextmenu = function ()
 {
     return false;
@@ -11,17 +12,18 @@ window.onload = () => {
 function runGame(){
   var canvas = document.getElementById('canvas');
   var game = new Game(canvas);
-  var peon = new Peon(110,110, 1);
-  var peon2 = new Peon(150,110, 1);
-  var peon3 = new Peon(190,110, 1);
+  var unitSize = Constants.gridUnitSize;
+  var peon = new Peon(unitSize*10,unitSize*4, game.map.gridUnitSize, 1);
+  var peon2 = new Peon(unitSize*9,unitSize*4, game.map.gridUnitSize,1);
+  var peon3 = new Peon(unitSize*8,unitSize*4, game.map.gridUnitSize,1);
   game.baseLayer.push(peon);
   game.baseLayer.push(peon2);
   game.baseLayer.push(peon3);
-  var enemy = new Peon(130,130,2);
+  var enemy = new Peon(unitSize*12,unitSize*4,game.map.gridUnitSize,2);
   game.baseLayer.push(enemy);
-  setInterval(()=>{
+  /*setInterval(()=>{
     enemy.moveTo(getRandomArbitrary(0,200), getRandomArbitrary(0,200));
-  }, 3000);
+  }, 3000); */
   game._intervalId = setInterval(game.run, 1000 / game.fps);
 }
 
